@@ -1,0 +1,49 @@
+**************************
+Clickhouse
+
+Installation Clickhouse on AWS
+https://clickhouse.yandex/docs/en/getting_started/
+
+sudo yum install yum-utils && \
+
+sudo rpm --import https://repo.yandex.ru/clickhouse/CLICKHOUSE-KEY.GPG && \
+
+sudo yum-config-manager --add-repo https://repo.yandex.ru/clickhouse/rpm/stable/x86_64 && \
+
+sudo yum install clickhouse-server clickhouse-client && \
+
+sudo mkdir /var/log/clickhouse-server && \
+
+sudo mkdir /var/log/clickhouse-server/1 && \
+
+sudo chown ec2-user:ec2-user /var/log/clickhouse-server/ && \
+
+sudo chown ec2-user:ec2-user /var/log/clickhouse-server/*
+
+change user
+
+sudo vi /etc/init.d/clickhouse-server
+
+CLICKHOUSE_USER=clickhouse
+
+replace with
+
+CLICKHOUSE_USER=ec2-user
+
+sudo service clickhouse-server restart
+
+Data Import
+cat create_table_clickhouse.sql | clickhouse-client -mn
+cat queries.sql | clickhouse-client -mn --time | grep \n0.
+
+**************************
+OmniSci
+
+Setup
+https://aws.amazon.com/marketplace/pp/B07QHJV7X8?qid=1572860967798&sr=0-2&ref_=srh_res_product_title
+sudo systemctl restart omnisci_server
+
+Data Import
+cat create_table_omnisci.sql | /opt/omnisci/bin/omnisql -u mapd -p <amazon instance id> -db mapd
+echo "COPY airline FROM '/home/centos/airline-data/On_Time_On_Time_Performance_*.csv';" | /opt/omnisci/bin/omnisql -u mapd -p <amazon instance id> -db mapd
+cat params.conf queries.sql | /opt/omnisci/bin/omnisql -u mapd -p <amazon instance id> -db mapd| grep Execution | nl
