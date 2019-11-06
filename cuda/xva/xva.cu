@@ -66,7 +66,7 @@ int main(int argc, const char* argv[])
 	for (int threadsCount = 1; threadsCount < 65; threadsCount++)
 	{
 		int datesCount = 180;
-		int simulationsCount = 10000;
+		int simulationsCount = 1000;
 		int size = datesCount * simulationsCount;
 		
 		thrust::host_vector<int> h_keys(size);
